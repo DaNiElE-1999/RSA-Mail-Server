@@ -13,7 +13,7 @@ Get-Content .env | foreach {
 }
 
 # Define the base URL for your MailHog instance
-$mailHogBaseUrl = "http://localhost:8025"
+$mailHogBaseUrl = "http://localhost:8025" # to be fixed with env
 
 # Define the endpoint to fetch emails
 $fetchEmailsEndpoint = "/api/v2/messages"
@@ -33,11 +33,13 @@ if ($response) {
         $from = $email.Content.Headers.From[0]
         $subject = $email.Content.Headers.Subject[0]
         $body = $email.Content.Body
-        $date = $email.Created
 
         # Check if the email matches the filter criteria
         if ($from -eq $desiredSender -and $subject -eq $desiredSubject) {
-            Write-Output $body > "$path\foreignKey.pub"
+            $unitedContent = $body -replace '=\r\n', ''
+            $pattern = "(?<==)3D"
+            $outputString = [regex]::Replace($unitedContent, $pattern, "")
+            Write-Output $outputString > "$path\foreignKey.txt"
         }
     }
 }

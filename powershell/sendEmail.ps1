@@ -81,11 +81,17 @@ $button.Add_Click({
         #Check if communication channel already exists
         & .\checkCommunicationChannel.ps1 -to $to -from $from
 
+        #If communication channel exists, encrypt email using the public key of the reciever
+        $publicKeyXml = Get-Content -Path "../users/$from/$to/foreignKey.txt"
+        $rsa = New-Object System.Security.Cryptography.RSACryptoServiceProvider
+        $rsa.FromXmlString($publicKeyXml)
+        $encryptedMessage = $rsa.Encrypt([System.Text.Encoding]::UTF8.GetBytes($body), $false)
+
         # Your existing email sending code goes here
         $smtpServer = $env:smtpServer
         $port = $env:port
         $credentials = New-Object System.Net.NetworkCredential("$env:username", "")
-        $message = New-Object System.Net.Mail.MailMessage($from, $to, $subject, $body)
+        $message = New-Object System.Net.Mail.MailMessage($from, $to, $subject, $encryptedMessage)
         $message.IsBodyHtml = $false
         $client = New-Object System.Net.Mail.SmtpClient($smtpServer, $port)
         $client.Credentials = $credentials

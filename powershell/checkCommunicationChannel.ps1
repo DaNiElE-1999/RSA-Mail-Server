@@ -37,5 +37,5 @@ if (-not (Test-Path $channel -PathType Container)) {
 
 }
 else {
-    Write-Host "Channel $from - $channel already exists."
+    Write-Host "Channel $from - $to already exists."
 }

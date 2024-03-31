@@ -4,23 +4,23 @@ param (
     [string]$to
 )
 
-$rsa = New-Object System.Security.Cryptography.RSACryptoServiceProvider(2048)
+$rsa = New-Object System.Security.Cryptography.RSACryptoServiceProvider 2048
 
-$publicKey = $rsa.ExportSubjectPublicKeyInfo()
-$privateKey = $rsa.ExportPkcs8PrivateKey()
+# Export private key
+$privateKey = $rsa.ExportParameters($true)
+$privateKeyXml = $rsa.ToXmlString($true)
+$privateKeyXml | Out-File -FilePath "$path/private_key.txt"
 
-# Convert keys to Base64 strings for storage or transmission
-$publicKeyBase64 = [Convert]::ToBase64String($publicKey)
-$privateKeyBase64 = [Convert]::ToBase64String($privateKey)
-
-Write-Output $publicKeyBase64 > "$path/id_rsa.pub"
-Write-Output $privateKeyBase64 > "$path/id_rsa"
+# Export public key
+$publicKey = $rsa.ExportParameters($false)
+$publicKeyXml = $rsa.ToXmlString($false)
+$publicKeyXml | Out-File -FilePath "$path/public_key.txt"
 
 #Send the public key via e-mail
 $smtpServer = $env:smtpServer
 $port = $env:port
 $credentials = New-Object System.Net.NetworkCredential("$env:username", "")
-$message = New-Object System.Net.Mail.MailMessage($from, $to, "Public Key", $publicKeyBase64)
+$message = New-Object System.Net.Mail.MailMessage($from, $to, "Public Key", "$publicKeyXml")
 $message.IsBodyHtml = $false
 $client = New-Object System.Net.Mail.SmtpClient($smtpServer, $port)
 $client.Credentials = $credentials
