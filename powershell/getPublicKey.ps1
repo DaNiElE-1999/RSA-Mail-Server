@@ -1,3 +1,16 @@
+param (
+    [string]$from
+)
+
+#using enviromental variables file
+Get-Content .env | foreach {
+    $name, $value = $_.split('=')
+    if ([string]::IsNullOrWhiteSpace($name) || $name.Contains('#')) {
+        continue
+    }
+    Set-Content env:\$name $value
+}
+
 # Define the base URL for your MailHog instance
 $mailHogBaseUrl = "http://localhost:8025"
 
@@ -5,8 +18,8 @@ $mailHogBaseUrl = "http://localhost:8025"
 $fetchEmailsEndpoint = "/api/v2/messages"
 
 # Define filter criteria
-$desiredSender = "example@example.com"
-$desiredSubject = "Your desired subject"
+$desiredSender = "$from"
+$desiredSubject = "Public Key"
 
 # Make a GET request to fetch emails from MailHog
 $response = Invoke-RestMethod -Uri "$mailHogBaseUrl$fetchEmailsEndpoint" -Method Get
@@ -23,12 +36,7 @@ if ($response) {
 
         # Check if the email matches the filter criteria
         if ($from -eq $desiredSender -and $subject -eq $desiredSubject) {
-            # Output email details
-            Write-Host "From: $from"
-            Write-Host "Subject: $subject"
-            Write-Host "Date: $date"
-            Write-Host "Body: $body"
-            Write-Host "----------------------"
+            Write-Output $body > "foreignKey.pub"
         }
     }
 }

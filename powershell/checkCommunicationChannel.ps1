@@ -27,7 +27,14 @@ if (-not (Test-Path $channel -PathType Container)) {
     $recieverChannel = "..\users\$to\$from"
     mkdir $recieverChannel
     & ./generateKeys.ps1 -path $recieverChannel -to $from -from $to
-    
+
+    #Get the keys  from other side and add them to the folder
+    Copy-Item ./getPublicKey.ps1 $channel
+    & ./$channel/getPublicKey.ps1 -from $to
+
+    Copy-Item ./getPublicKey.ps1 $recieverChannel
+    & ./$recieverChannel/getPublicKey.ps1 -from $from
+
 }
 else {
     Write-Host "Channel $from - $channel already exists."
