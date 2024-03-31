@@ -1,5 +1,6 @@
 param (
-    [string]$from
+    [string]$from,
+    [string]$path
 )
 
 #using enviromental variables file
@@ -36,7 +37,7 @@ if ($response) {
 
         # Check if the email matches the filter criteria
         if ($from -eq $desiredSender -and $subject -eq $desiredSubject) {
-            Write-Output $body > "foreignKey.pub"
+            Write-Output $body > "$path\foreignKey.pub"
         }
     }
 }

@@ -30,10 +30,10 @@ if (-not (Test-Path $channel -PathType Container)) {
 
     #Get the keys  from other side and add them to the folder
     Copy-Item ./getPublicKey.ps1 $channel
-    & ./$channel/getPublicKey.ps1 -from $to
+    & ./$channel/getPublicKey.ps1 -from $to -path $channel
 
     Copy-Item ./getPublicKey.ps1 $recieverChannel
-    & ./$recieverChannel/getPublicKey.ps1 -from $from
+    & ./$recieverChannel/getPublicKey.ps1 -from $from -path $recieverChannel
 
 }
 else {
