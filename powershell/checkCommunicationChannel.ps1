@@ -35,6 +35,13 @@ if (-not (Test-Path $channel -PathType Container)) {
     Copy-Item ./getPublicKey.ps1 $recieverChannel
     & ./$recieverChannel/getPublicKey.ps1 -from $from -path $recieverChannel
 
+    #Create mail directory
+    mkdir ..\users\$from\$to\mails 
+    mkdir ..\users\$to\$from\mails 
+
+    Copy-Item "./readEmail.ps1" "../users/$from/readEmail.ps1"
+    Copy-Item "./readEmail.ps1" "../users/$to/readEmail.ps1"
+
 }
 else {
     Write-Host "Channel $from - $to already exists."

@@ -87,6 +87,9 @@ $button.Add_Click({
         $rsa.FromXmlString($publicKeyXml)
         $encryptedMessage = $rsa.Encrypt([System.Text.Encoding]::UTF8.GetBytes($body), $false)
 
+        # Save encrypted message to file
+        [System.IO.File]::WriteAllBytes("encrypted_message.txt", $encryptedMessage)
+
         # Your existing email sending code goes here
         $smtpServer = $env:smtpServer
         $port = $env:port
@@ -98,6 +101,10 @@ $button.Add_Click({
         $client.Send($message)
 
         Write-Host "Email sent successfully to $to"
+
+        #Save the email in the folder
+
+        &  .\saveEmail.ps1 -from $from -path "..\users\$to\$from\mails"
     })
 
 $form.Controls.Add($button)
