@@ -29,8 +29,8 @@ if (-not (Test-Path $channel -PathType Container)) {
     & ./generateKeys.ps1 -path $recieverChannel -to $from -from $to
 
     #Get the keys  from other side and add them to the folder
-    & ./getPublicKey.ps1 -from $to -path $channel
-    & ./getPublicKey.ps1 -from $from -path $recieverChannel
+    & ./getPublicKey.ps1 -from $to -to $from -path $channel
+    & ./getPublicKey.ps1 -from $from -to $to -path $recieverChannel
 
     #Create mail directory
     mkdir ..\users\$from\$to\mails 

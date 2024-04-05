@@ -1,5 +1,6 @@
 param (
     [string]$from,
+    [string]$to,
     [string]$path
 )
 
@@ -20,6 +21,7 @@ $fetchEmailsEndpoint = "/api/v2/messages"
 
 # Define filter criteria
 $desiredSender = "$from"
+$desiredReciever = "$to"
 $desiredSubject = "Public Key"
 
 # Make a GET request to fetch emails from MailHog
@@ -31,11 +33,12 @@ if ($response) {
     foreach ($email in $response.items) {
         # Extract email details
         $from = $email.Content.Headers.From[0]
+        $to = $email.Content.Headers.To[0]
         $subject = $email.Content.Headers.Subject[0]
         $body = $email.Content.Body
 
         # Check if the email matches the filter criteria
-        if ($from -eq $desiredSender -and $subject -eq $desiredSubject) {
+        if ($from -eq $desiredSender -and $to -eq $desiredReciever -and $subject -eq $desiredSubject) {
             $unitedContent = $body -replace '=\r\n', ''
             $pattern = "(?<==)3D"
             $outputString = [regex]::Replace($unitedContent, $pattern, "")
