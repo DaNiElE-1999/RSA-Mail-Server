@@ -10,7 +10,7 @@ $selectedDirectory = $directoryNames | Out-GridView -Title "Select a receiver" -
 if ($selectedDirectory) {
     # Load private key
     $privateKeyXml = Get-Content -Path (Join-Path $selectedDirectory "private_key.txt")
-    $rsa = New-Object System.Security.Cryptography.RSACryptoServiceProvider
+    $rsa = New-Object System.Security.Cryptography.RSACryptoServiceProvider 2048
     $rsa.FromXmlString($privateKeyXml)
 
     # Get all text files in the selected directory/mails folder
