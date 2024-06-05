@@ -7,6 +7,7 @@ Developed in Powershell /
 ### Prerequisites
 
 * [X] Windows OS
+* [X] Powershell version 7 and above
 * [X] Docker with Linux containers
 
 ### Table of Contents
